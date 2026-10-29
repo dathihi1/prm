@@ -77,3 +77,23 @@ Màn hình Instagram và backend demo Instagram vẫn giữ nguyên:
 ```powershell
 flutter run -t lib/main_instagram.dart
 ```
+
+## Bonus 5: Ông Bán Tất + Firebase
+
+Nhánh `bonus5` bổ sung luồng hoàn chỉnh:
+
+- Đăng nhập và đăng ký bằng API tại `https://backend.ongbantat.io.vn`.
+- CAPTCHA SVG được tải từ máy chủ và gửi theo định dạng `captchaId|answer`.
+- Lấy/cập nhật hồ sơ người dùng bằng API trang 16.
+- Đồng bộ bản sao hồ sơ vào `users/{firebaseUid}/bonus5` trong Firebase Realtime Database.
+- Không lưu mật khẩu hoặc access token Ông Bán Tất lên Firebase.
+
+Chạy Bonus 5 (đây cũng là entrypoint mặc định):
+
+```powershell
+flutter run
+# hoặc
+flutter run -t lib/main_bonus5.dart
+```
+
+Trước khi chạy, đặt `google-services.json` vào `android/app/` và bật Email/Password trong Firebase Authentication. File cấu hình này được `.gitignore` loại khỏi GitHub.
