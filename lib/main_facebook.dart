@@ -6,9 +6,12 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'captcha_canvas.dart';
+import 'bonus5_firebase_repository.dart';
 import 'facebook_auth_api.dart';
 import 'firebase_notification_service.dart';
 import 'firebase_profile_repository.dart';
+import 'main_bonus5.dart';
+import 'ongbantat_api.dart';
 import 'profile_screen.dart';
 
 Future<void> main() async {
@@ -116,6 +119,7 @@ class _FacebookLoginScreenState extends State<FacebookLoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _captchaController = TextEditingController();
   late final FacebookAuthApi _authApi;
+  late final OngBanTatApi _bonus5Api;
   Timer? _captchaExpirationTimer;
 
   FacebookCaptcha? _captcha;
@@ -127,6 +131,7 @@ class _FacebookLoginScreenState extends State<FacebookLoginScreen> {
   void initState() {
     super.initState();
     _authApi = FacebookAuthApi();
+    _bonus5Api = OngBanTatApi();
     _loadCaptcha();
   }
 
@@ -137,6 +142,7 @@ class _FacebookLoginScreenState extends State<FacebookLoginScreen> {
     _captchaController.dispose();
     _captchaExpirationTimer?.cancel();
     _authApi.close();
+    _bonus5Api.close();
     super.dispose();
   }
 
@@ -171,11 +177,24 @@ class _FacebookLoginScreenState extends State<FacebookLoginScreen> {
     }
   }
 
-  Future<void> _login() => _authenticate(createAccount: false);
+  Future<void> _login() => _authenticate();
 
-  Future<void> _signUp() => _authenticate(createAccount: true);
+  Future<void> _openSignUp() async {
+    final result = await Navigator.of(context).push<Bonus5RegistrationResult>(
+      MaterialPageRoute<Bonus5RegistrationResult>(
+        builder: (_) => Bonus5RegisterScreen(
+          api: _bonus5Api,
+          firebaseRepository: Bonus5FirebaseRepository(),
+        ),
+      ),
+    );
+    if (result == null || !mounted) return;
+    _emailController.text = result.email;
+    _passwordController.clear();
+    await _loadCaptcha();
+  }
 
-  Future<void> _authenticate({required bool createAccount}) async {
+  Future<void> _authenticate() async {
     if (_emailController.text.trim().isEmpty ||
         _passwordController.text.isEmpty ||
         _captchaController.text.trim().isEmpty) {
@@ -194,17 +213,10 @@ class _FacebookLoginScreenState extends State<FacebookLoginScreen> {
         captchaId: captcha.id,
         captchaAnswer: _captchaController.text.trim(),
       );
-      if (createAccount) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
-      } else {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
-      }
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
     } on FacebookAuthException catch (error) {
       if (mounted) _showMessage(error.message);
     } on FirebaseAuthException catch (error) {
@@ -500,7 +512,7 @@ class _FacebookLoginScreenState extends State<FacebookLoginScreen> {
 
                     // Sign Up Link
                     GestureDetector(
-                      onTap: _isLoggingIn ? null : _signUp,
+                      onTap: _isLoggingIn ? null : _openSignUp,
                       child: const Text(
                         'Sign Up for Facebook',
                         style: TextStyle(

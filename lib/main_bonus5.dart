@@ -161,16 +161,16 @@ class _Bonus5LoginScreenState extends State<Bonus5LoginScreen> {
   }
 
   Future<void> _openRegister() async {
-    final account = await Navigator.of(context).push<String>(
-      MaterialPageRoute<String>(
+    final result = await Navigator.of(context).push<Bonus5RegistrationResult>(
+      MaterialPageRoute<Bonus5RegistrationResult>(
         builder: (_) => Bonus5RegisterScreen(
           api: widget.api,
           firebaseRepository: widget.firebaseRepository,
         ),
       ),
     );
-    if (account != null && mounted) {
-      _accountController.text = account;
+    if (result != null && mounted) {
+      _accountController.text = result.account;
       _passwordController.clear();
       _captchaController.clear();
       await _captchaKey.currentState?.refresh();
@@ -231,9 +231,10 @@ class _Bonus5LoginScreenState extends State<Bonus5LoginScreen> {
                     : const Text('ĐĂNG NHẬP'),
               ),
             ),
-            TextButton(
+            OutlinedButton.icon(
               onPressed: _submitting ? null : _openRegister,
-              child: const Text('Chưa có tài khoản? Đăng ký'),
+              icon: const Icon(Icons.person_add_alt_1),
+              label: const Text('SIGN UP'),
             ),
           ],
         ),
@@ -339,7 +340,15 @@ class _Bonus5RegisterScreenState extends State<Bonus5RegisterScreen> {
           ],
         ),
       );
-      if (mounted) Navigator.pop(context, _accountController.text.trim());
+      if (mounted) {
+        Navigator.pop(
+          context,
+          Bonus5RegistrationResult(
+            account: _accountController.text.trim(),
+            email: _emailController.text.trim(),
+          ),
+        );
+      }
     } on OngBanTatApiException catch (error) {
       _message(error.message);
       await _captchaKey.currentState?.refresh();
@@ -427,6 +436,13 @@ class _Bonus5RegisterScreenState extends State<Bonus5RegisterScreen> {
       ),
     );
   }
+}
+
+class Bonus5RegistrationResult {
+  const Bonus5RegistrationResult({required this.account, required this.email});
+
+  final String account;
+  final String email;
 }
 
 class Bonus5ProfileScreen extends StatefulWidget {
