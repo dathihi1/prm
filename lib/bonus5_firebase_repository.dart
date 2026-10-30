@@ -4,7 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'ongbantat_api.dart';
 
 /// Mirrors Bonus 5 profile data to Firebase.
-/// Passwords and Ông Bán Tất access tokens are deliberately never persisted.
+/// Passwords and remote API access tokens are deliberately never persisted.
 class Bonus5FirebaseRepository {
   Bonus5FirebaseRepository({FirebaseAuth? auth, FirebaseDatabase? database})
     : _auth = auth ?? FirebaseAuth.instance,

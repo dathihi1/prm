@@ -78,7 +78,7 @@ Màn hình Instagram và backend demo Instagram vẫn giữ nguyên:
 flutter run -t lib/main_instagram.dart
 ```
 
-## Bonus 5: Ông Bán Tất + Firebase
+## Bonus 5: API + Firebase
 
 Nhánh `bonus5` bổ sung luồng hoàn chỉnh:
 
@@ -86,7 +86,7 @@ Nhánh `bonus5` bổ sung luồng hoàn chỉnh:
 - CAPTCHA SVG được tải từ máy chủ và gửi theo định dạng `captchaId|answer`.
 - Lấy/cập nhật hồ sơ người dùng bằng API trang 16.
 - Đồng bộ bản sao hồ sơ vào `users/{firebaseUid}/bonus5` trong Firebase Realtime Database.
-- Không lưu mật khẩu hoặc access token Ông Bán Tất lên Firebase.
+- Không lưu mật khẩu hoặc access token của API lên Firebase.
 
 Chạy Bonus 5 (đây cũng là entrypoint mặc định):
 

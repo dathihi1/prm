@@ -188,7 +188,7 @@ class _Bonus5LoginScreenState extends State<Bonus5LoginScreen> {
   Widget build(BuildContext context) {
     return AuthShell(
       title: 'Đăng nhập',
-      subtitle: 'Bonus 5 • Ông Bán Tất + Firebase',
+      subtitle: 'Bonus 5 • Firebase',
       child: Form(
         key: _formKey,
         child: Column(
@@ -369,7 +369,7 @@ class _Bonus5RegisterScreenState extends State<Bonus5RegisterScreen> {
   Widget build(BuildContext context) {
     return AuthShell(
       title: 'Đăng ký',
-      subtitle: 'Tạo tài khoản Ông Bán Tất',
+      subtitle: 'Tạo tài khoản mới',
       showBack: true,
       child: Form(
         key: _formKey,
@@ -1033,7 +1033,7 @@ class _FirebaseWarning extends StatelessWidget {
         border: Border.all(color: Colors.orange.shade200),
       ),
       child: const Text(
-        'Chưa cấu hình Firebase. API Ông Bán Tất vẫn dùng được nhưng dữ liệu chưa được đồng bộ.',
+        'Chưa cấu hình Firebase. Ứng dụng vẫn dùng được nhưng dữ liệu chưa được đồng bộ.',
       ),
     );
   }

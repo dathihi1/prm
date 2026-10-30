@@ -249,9 +249,7 @@ class OngBanTatApi {
     } on OngBanTatApiException {
       rethrow;
     } on SocketException {
-      throw const OngBanTatApiException(
-        'Không thể kết nối tới máy chủ Ông Bán Tất.',
-      );
+      throw const OngBanTatApiException('Không thể kết nối tới máy chủ.');
     } on TimeoutException {
       throw const OngBanTatApiException('Máy chủ phản hồi quá chậm.');
     } on FormatException {
