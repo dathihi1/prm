@@ -1,38 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 class OngBanTatCaptcha {
-  const OngBanTatCaptcha({
-    required this.id,
-    required this.svg,
-    this.clientSuffix = '',
-    this.serverAnswerLength = 4,
-  });
+  const OngBanTatCaptcha({required this.id, required this.svg});
 
   final int id;
   final String svg;
-  final String clientSuffix;
-  final int serverAnswerLength;
 
-  int get totalLength => serverAnswerLength + clientSuffix.length;
-
-  String answer(String value) {
-    final input = value.trim();
-    if (clientSuffix.isNotEmpty) {
-      final suffixIsValid =
-          input.length == totalLength &&
-          input.toUpperCase().endsWith(clientSuffix.toUpperCase());
-      if (!suffixIsValid) {
-        throw const OngBanTatApiException(
-          'Mã CAPTCHA phải có đủ 6 ký tự và đúng nội dung hiển thị.',
-        );
-      }
-      return '$id|${input.substring(0, serverAnswerLength)}';
-    }
-    return '$id|$input';
-  }
+  String answer(String value) => '$id|${value.trim()}';
 }
 
 class OngBanTatUser {
@@ -111,7 +87,6 @@ class OngBanTatApi {
   final String baseUrl;
   final HttpClient _client;
   final Duration requestTimeout;
-  final Random _random = Random.secure();
 
   String? _publicToken;
 
@@ -124,16 +99,7 @@ class OngBanTatApi {
     return OngBanTatCaptcha(
       id: _asInt(data['id']),
       svg: data['data']?.toString() ?? '',
-      clientSuffix: _createCaptchaSuffix(),
     );
-  }
-
-  String _createCaptchaSuffix() {
-    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    return List<String>.generate(
-      2,
-      (_) => alphabet[_random.nextInt(alphabet.length)],
-    ).join();
   }
 
   Future<String> register({

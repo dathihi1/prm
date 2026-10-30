@@ -765,31 +765,10 @@ class Bonus5CaptchaFieldState extends State<Bonus5CaptchaField> {
                         style: const TextStyle(color: Color(0xFF2B4E8C)),
                         textAlign: TextAlign.center,
                       )
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SvgPicture.string(
-                            captcha!.svg,
-                            width: 150,
-                            height: 50,
-                            fit: BoxFit.fill,
-                          ),
-                          Container(
-                            width: 64,
-                            height: 50,
-                            alignment: Alignment.center,
-                            color: const Color(0xFFCC9966),
-                            child: Text(
-                              captcha!.clientSuffix,
-                              style: const TextStyle(
-                                color: Color(0xFF313E35),
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 3,
-                              ),
-                            ),
-                          ),
-                        ],
+                    : SvgPicture.string(
+                        captcha!.svg,
+                        height: 50,
+                        fit: BoxFit.contain,
                       ),
               ),
             ),
@@ -804,12 +783,12 @@ class Bonus5CaptchaFieldState extends State<Bonus5CaptchaField> {
         TextFormField(
           key: const Key('bonus5CaptchaInput'),
           controller: widget.controller,
-          maxLength: captcha?.totalLength ?? 6,
+          maxLength: 4,
           textCapitalization: TextCapitalization.characters,
           style: const TextStyle(color: Colors.white, fontSize: 16),
           cursorColor: Colors.white,
           decoration: const InputDecoration(
-            labelText: 'Mã CAPTCHA 6 ký tự (*)',
+            labelText: 'Mã CAPTCHA (*)',
             labelStyle: TextStyle(color: Colors.white70),
             floatingLabelStyle: TextStyle(color: Colors.white),
             prefixIcon: Icon(
