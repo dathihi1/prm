@@ -32,7 +32,9 @@ void main() {
     final captcha = await api.createCaptcha();
 
     expect(captcha.id, 123);
-    expect(captcha.answer(' aB12 '), '123|aB12');
+    expect(captcha.clientSuffix, hasLength(2));
+    expect(captcha.totalLength, 6);
+    expect(captcha.answer('aB12${captcha.clientSuffix}'), '123|aB12');
   });
 
   test('registers with public token and page 29 metadata', () async {
@@ -66,8 +68,12 @@ void main() {
       account: 'student.01',
       password: 'abc123',
       email: 'student@example.com',
-      captcha: const OngBanTatCaptcha(id: 42, svg: '<svg/>'),
-      captchaAnswer: 'Z9X8',
+      captcha: const OngBanTatCaptcha(
+        id: 42,
+        svg: '<svg/>',
+        clientSuffix: 'Q7',
+      ),
+      captchaAnswer: 'Z9X8Q7',
     );
 
     expect(message, 'Đăng ký thành công');
@@ -127,8 +133,8 @@ void main() {
     final session = await api.login(
       account: 'student01',
       password: 'abc123',
-      captcha: const OngBanTatCaptcha(id: 7, svg: '<svg/>'),
-      captchaAnswer: 'AB12',
+      captcha: const OngBanTatCaptcha(id: 7, svg: '<svg/>', clientSuffix: 'C9'),
+      captchaAnswer: 'AB12C9',
     );
     final profile = await api.getUser(session);
     final message = await api.updateUser(
