@@ -161,6 +161,27 @@ void main() {
       ),
     );
   });
+
+  test(
+    'converts an abruptly closed connection into a handled API error',
+    () async {
+      server.listen((request) async {
+        final socket = await request.response.detachSocket(writeHeaders: false);
+        socket.destroy();
+      });
+
+      expect(
+        () => api.createCaptcha(),
+        throwsA(
+          isA<OngBanTatApiException>().having(
+            (error) => error.message,
+            'message',
+            contains('đóng đột ngột'),
+          ),
+        ),
+      );
+    },
+  );
 }
 
 void _json(HttpResponse response, Map<String, dynamic> body) {

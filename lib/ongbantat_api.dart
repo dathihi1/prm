@@ -225,8 +225,13 @@ class OngBanTatApi {
       final request = await _client
           .openUrl(method, uri)
           .timeout(requestTimeout);
+      // The remote reverse proxy occasionally closes pooled keep-alive
+      // connections without a response. A fresh connection per request avoids
+      // reusing a socket that the proxy has already discarded.
+      request.persistentConnection = false;
       request.headers.set('api-version', apiVersion);
       request.headers.set('Authorization', authorization ?? 'customer');
+      request.headers.set(HttpHeaders.acceptHeader, 'application/json');
       request.headers.contentType = ContentType.json;
       if (body != null) request.write(jsonEncode(body));
 
@@ -250,6 +255,14 @@ class OngBanTatApi {
       rethrow;
     } on SocketException {
       throw const OngBanTatApiException('Không thể kết nối tới máy chủ.');
+    } on HttpException {
+      throw const OngBanTatApiException(
+        'Kết nối bị máy chủ đóng đột ngột. Vui lòng thử lại sau.',
+      );
+    } on HandshakeException {
+      throw const OngBanTatApiException(
+        'Không thể thiết lập kết nối bảo mật tới máy chủ.',
+      );
     } on TimeoutException {
       throw const OngBanTatApiException('Máy chủ phản hồi quá chậm.');
     } on FormatException {
