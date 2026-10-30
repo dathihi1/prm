@@ -200,6 +200,7 @@ class _Bonus5LoginScreenState extends State<Bonus5LoginScreen> {
               controller: _accountController,
               label: 'Tài khoản',
               icon: Icons.person_outline,
+              facebookStyle: true,
               validator: _required('Vui lòng nhập tài khoản.'),
             ),
             const SizedBox(height: 14),
@@ -209,6 +210,7 @@ class _Bonus5LoginScreenState extends State<Bonus5LoginScreen> {
               label: 'Mật khẩu',
               icon: Icons.lock_outline,
               obscureText: true,
+              facebookStyle: true,
               validator: _required('Vui lòng nhập mật khẩu.'),
             ),
             const SizedBox(height: 14),
@@ -378,6 +380,7 @@ class _Bonus5RegisterScreenState extends State<Bonus5RegisterScreen> {
               controller: _accountController,
               label: 'Account (*)',
               icon: Icons.person_outline,
+              facebookStyle: true,
               validator: (value) {
                 if (!_accountPattern.hasMatch(value?.trim() ?? '')) {
                   return 'Tối thiểu 3 ký tự; chỉ chữ, số, dấu chấm hoặc gạch dưới.';
@@ -392,6 +395,7 @@ class _Bonus5RegisterScreenState extends State<Bonus5RegisterScreen> {
               label: 'Password (*)',
               icon: Icons.lock_outline,
               obscureText: true,
+              facebookStyle: true,
               validator: (value) {
                 if (!_passwordPattern.hasMatch(value ?? '')) {
                   return 'Ít nhất 6 ký tự, gồm cả chữ và số, không ký tự đặc biệt.';
@@ -406,6 +410,7 @@ class _Bonus5RegisterScreenState extends State<Bonus5RegisterScreen> {
               label: 'Email (*)',
               icon: Icons.email_outlined,
               keyboardType: TextInputType.emailAddress,
+              facebookStyle: true,
               validator: (value) => _emailPattern.hasMatch(value?.trim() ?? '')
                   ? null
                   : 'Email không đúng định dạng.',
@@ -750,13 +755,16 @@ class Bonus5CaptchaFieldState extends State<Bonus5CaptchaField> {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  border: Border.all(color: Theme.of(context).dividerColor),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 child: _loading
-                    ? const CircularProgressIndicator()
+                    ? const CircularProgressIndicator(color: Color(0xFF2B4E8C))
                     : captcha == null
-                    ? Text(_error ?? 'Không tải được CAPTCHA')
+                    ? Text(
+                        _error ?? 'Không tải được CAPTCHA',
+                        style: const TextStyle(color: Color(0xFF2B4E8C)),
+                        textAlign: TextAlign.center,
+                      )
                     : SvgPicture.string(
                         captcha!.svg,
                         height: 50,
@@ -767,7 +775,7 @@ class Bonus5CaptchaFieldState extends State<Bonus5CaptchaField> {
             IconButton(
               tooltip: 'Tạo CAPTCHA mới',
               onPressed: _loading ? null : refresh,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.refresh, color: Colors.white),
             ),
           ],
         ),
@@ -777,10 +785,31 @@ class Bonus5CaptchaFieldState extends State<Bonus5CaptchaField> {
           controller: widget.controller,
           maxLength: 4,
           textCapitalization: TextCapitalization.characters,
+          style: const TextStyle(color: Colors.white, fontSize: 16),
+          cursorColor: Colors.white,
           decoration: const InputDecoration(
             labelText: 'Mã CAPTCHA (*)',
-            prefixIcon: Icon(Icons.verified_user_outlined),
+            labelStyle: TextStyle(color: Colors.white70),
+            floatingLabelStyle: TextStyle(color: Colors.white),
+            prefixIcon: Icon(
+              Icons.verified_user_outlined,
+              color: Colors.white70,
+            ),
             counterText: '',
+            filled: false,
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white38),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white, width: 1.5),
+            ),
+            errorBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFFFFB4AB)),
+            ),
+            focusedErrorBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFFFFB4AB), width: 1.5),
+            ),
+            errorStyle: TextStyle(color: Color(0xFFFFDAD6)),
           ),
           validator: _required('Vui lòng nhập CAPTCHA.'),
         ),
@@ -805,54 +834,123 @@ class AuthShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const facebookBlue = Color(0xFF2B4E8C);
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF23395D), Color(0xFF3457A1), Color(0xFF6C63A8)],
-          ),
-        ),
+      backgroundColor: facebookBlue,
+      body: ColoredBox(
+        color: facebookBlue,
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 560),
-                child: Card(
-                  elevation: 12,
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (showBack)
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: IconButton(
-                              tooltip: 'Quay lại',
-                              onPressed: () => Navigator.pop(context),
-                              icon: const Icon(Icons.arrow_back),
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (showBack)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          tooltip: 'Quay lại',
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    else
+                      const SizedBox(height: 48),
+                    Center(
+                      child: Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'f',
+                            style: TextStyle(
+                              color: facebookBlue,
+                              fontSize: 54,
+                              fontWeight: FontWeight.bold,
+                              height: 1,
                             ),
                           ),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headlineMedium
-                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        const SizedBox(height: 6),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         Text(
-                          subtitle,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          'English',
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
-                        const SizedBox(height: 24),
-                        child,
+                        Text(
+                          ' • ',
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
+                        Text(
+                          'Change',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 30),
+                    Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      subtitle,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        filledButtonTheme: FilledButtonThemeData(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: const Color(0xFF33539E),
+                            foregroundColor: Colors.white,
+                            disabledBackgroundColor: Colors.white12,
+                            disabledForegroundColor: Colors.white54,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                        outlinedButtonTheme: OutlinedButtonThemeData(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            side: const BorderSide(color: Colors.white70),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                      ),
+                      child: child,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -871,6 +969,7 @@ class AuthTextField extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType,
     this.validator,
+    this.facebookStyle = false,
     super.key,
   });
 
@@ -880,15 +979,42 @@ class AuthTextField extends StatelessWidget {
   final bool obscureText;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
+  final bool facebookStyle;
 
   @override
   Widget build(BuildContext context) {
+    final decoration = facebookStyle
+        ? InputDecoration(
+            labelText: label,
+            labelStyle: const TextStyle(color: Colors.white70),
+            floatingLabelStyle: const TextStyle(color: Colors.white),
+            prefixIcon: Icon(icon, color: Colors.white70),
+            filled: false,
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white38),
+            ),
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white, width: 1.5),
+            ),
+            errorBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFFFFB4AB)),
+            ),
+            focusedErrorBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFFFFB4AB), width: 1.5),
+            ),
+            errorStyle: const TextStyle(color: Color(0xFFFFDAD6)),
+          )
+        : InputDecoration(labelText: label, prefixIcon: Icon(icon));
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
-      decoration: InputDecoration(labelText: label, prefixIcon: Icon(icon)),
+      style: facebookStyle
+          ? const TextStyle(color: Colors.white, fontSize: 16)
+          : null,
+      cursorColor: facebookStyle ? Colors.white : null,
+      decoration: decoration,
     );
   }
 }

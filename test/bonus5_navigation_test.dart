@@ -11,7 +11,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.widgetWithText(OutlinedButton, 'SIGN UP'));
+    final signUpButton = find.widgetWithText(OutlinedButton, 'SIGN UP');
+    await tester.ensureVisible(signUpButton);
+    await tester.tap(signUpButton);
     await tester.pumpAndSettle();
 
     expect(find.text('Đăng ký'), findsOneWidget);
